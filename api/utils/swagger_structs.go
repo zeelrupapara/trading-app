@@ -113,6 +113,24 @@ type ResponsePlaceOrder struct {
 	} `json:"body"`
 }
 
+// swagger:parameters RequestTradeHistory
+type RequestTradeHistory struct {
+	// in:parameters
+	Page string `json:"page"`
+}
+
+// swagger:response ResponseTradeHistory
+type ResponseTradeHistory struct {
+	// in:body
+	Body struct {
+		// enum: success
+		Status string `json:"status"`
+		Data   []struct {
+			structs.ResPlaceOrder
+		} `json:"data"`
+	} `json:"body"`
+}
+
 ////////////////////
 // --- GENERIC ---//
 ////////////////////

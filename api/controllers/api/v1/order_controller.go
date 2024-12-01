@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/doug-martin/goqu/v9"
 	"github.com/gofiber/fiber/v2"
@@ -54,7 +55,7 @@ func NewOrderController(logger *zap.Logger, db *goqu.Database, cfg config.AppCon
 //	      400: GenericResFailBadRequest
 //		  500: GenericResError
 func (ctrl *OrderController) PlaceOrder(c *fiber.Ctx) error {
-	uid := c.Locals(constants.ParamUid).(string)
+	uid := c.Locals(constants.ContextUid).(string)
 
 	var orderReq structs.ReqPlaceOrder
 
@@ -74,4 +75,33 @@ func (ctrl *OrderController) PlaceOrder(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(order)
+}
+
+// GetAllOrders handles the GET request to retrieve all orders
+// swagger:route GET /api/v1/trade-history Orders RequestTradeHistory
+//
+// Retrieve all orders.
+//
+//	Schemes: http, https
+//
+//	Responses:
+//	  200: ResponseTradeHistory
+//	  500: GenericResError
+func (ctrl *OrderController) GetOrders(c *fiber.Ctx) error {
+	uid := c.Locals(constants.ContextUid).(string)
+
+	page, err := strconv.Atoi(c.Query("page", "1"))
+	if err != nil {
+		return utils.JSONFail(c, http.StatusBadRequest, "Invalid page")
+	}
+
+	// get the limit
+	limit := constants.OrderPageLimit
+	offset := (page - 1) * int(limit)
+
+	orders, err := ctrl.service.GetOrders(uint(limit), uint(offset), uid)
+	if err != nil {
+		return utils.JSONError(c, http.StatusInternalServerError, err.Error())
+	}
+	return utils.JSONSuccess(c, http.StatusOK, orders)
 }

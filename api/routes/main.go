@@ -132,5 +132,6 @@ func ordersController(v1 fiber.Router, goqu *goqu.Database, logger *zap.Logger, 
 	}
 
 	v1.Post("/orders", middleware.Authenticated, orderController.PlaceOrder)
+	v1.Get("/trade-history", middleware.Authenticated, orderController.GetOrders)
 	return nil
 }

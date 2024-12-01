@@ -105,3 +105,25 @@ func (ctrl *OrderController) GetOrders(c *fiber.Ctx) error {
 	}
 	return utils.JSONSuccess(c, http.StatusOK, orders)
 }
+
+// GetPositions handles the GET request to retrieve all positions
+// swagger:route GET /api/v1/position Orders nil
+//
+// Retrieve all positions.
+//
+//	Schemes: http, https
+//
+//	Responses:
+//	  200: ResponsePosition
+//	  500: GenericResError
+func (ctrl *OrderController) GetPositions(c *fiber.Ctx) error {
+	uid := c.Locals(constants.ContextUid).(string)
+
+	positions, err := ctrl.service.GetUserPositions(uid)
+	ctrl.logger.Info("positions", zap.Any("positions", positions))
+	if err != nil {
+		ctrl.logger.Error("error while get user positions", zap.Any("id", uid), zap.Error(err))
+		return utils.JSONError(c, http.StatusInternalServerError, err.Error())
+	}
+	return utils.JSONSuccess(c, http.StatusOK, positions)
+}

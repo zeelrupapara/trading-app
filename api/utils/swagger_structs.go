@@ -131,6 +131,18 @@ type ResponseTradeHistory struct {
 	} `json:"body"`
 }
 
+// swagger:response ResponsePosition
+type ResponsePosition struct {
+	// in:body
+	Body struct {
+		// enum: success
+		Status string `json:"status"`
+		Data  []struct {
+			models.PositionSummary
+		} `json:"data"`
+	} `json:"body"`
+}
+
 ////////////////////
 // --- GENERIC ---//
 ////////////////////

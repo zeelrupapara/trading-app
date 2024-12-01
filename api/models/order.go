@@ -16,10 +16,18 @@ type Order struct {
 	Symbol    string    `json:"symbol"`
 	Volume    float64   `json:"volume"`
 	OrderType string    `json:"order_type" db:"order_type"` // "buy" or "sell", with default value
-	Price     string    `json:"price"`
+	Price     float64   `json:"price"`
 	UserId    string    `json:"user_id" db:"user_id"`
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
+}
+
+type PositionSummary struct {
+	Symbol            string  `json:"symbol"`
+	HoldingVolume     float64 `json:"holding_volume"` 
+	CurrentPrice      float64 `json:"current_price"` 
+	ProfitLoss        float64 `json:"profit_loss"`   
+	HoldingInvestment float64 `json:"holding_investment"` 
 }
 
 type OrderModel struct {
@@ -104,5 +112,17 @@ func (model *OrderModel) GetOrders(limit uint, offset uint, userId string) ([]Or
 	if err := query.ScanStructs(&orders); err != nil {
 		return nil, err
 	}
+	return orders, nil
+}
+
+func (model *OrderModel) GetAllOrders(userID string) ([]Order, error) {
+	var orders []Order
+
+	query := model.db.From(OrderTable).Where(goqu.Ex{"user_id": userID}).Order(goqu.C("created_at").Desc())
+
+	if err := query.ScanStructs(&orders); err != nil {
+		return nil, err
+	}
+
 	return orders, nil
 }

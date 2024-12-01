@@ -60,3 +60,7 @@ func (s *OrderService) PlaceOrder(symbol string, volume float64, orderType strin
 
 	return order, nil
 }
+
+func (s *OrderService) GetOrders(limit uint, offset uint, userId string) ([]models.Order, error) {
+	return s.orderModel.GetOrders(limit, offset, userId)
+}

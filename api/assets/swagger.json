@@ -134,6 +134,36 @@
         }
       }
     },
+    "/api/v1/trade-history": {
+      "get": {
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Retrieve all orders.",
+        "operationId": "RequestTradeHistory",
+        "parameters": [
+          {
+            "type": "string",
+            "x-go-name": "Page",
+            "description": "in:parameters",
+            "name": "page",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/ResponseTradeHistory"
+          },
+          "500": {
+            "$ref": "#/responses/GenericResError"
+          }
+        }
+      }
+    },
     "/api/v1/users": {
       "post": {
         "consumes": [
@@ -684,6 +714,63 @@
                 "type": "number",
                 "format": "double",
                 "x-go-name": "Volume"
+              }
+            },
+            "x-go-name": "Data"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ],
+            "x-go-name": "Status"
+          }
+        }
+      }
+    },
+    "ResponseTradeHistory": {
+      "description": "",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "created_at": {
+                  "type": "string",
+                  "x-go-name": "CreatedAt"
+                },
+                "id": {
+                  "type": "string",
+                  "x-go-name": "Id"
+                },
+                "order_type": {
+                  "type": "string",
+                  "x-go-name": "OrderType"
+                },
+                "price": {
+                  "type": "string",
+                  "x-go-name": "Price"
+                },
+                "symbol": {
+                  "type": "string",
+                  "x-go-name": "Symbol"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "x-go-name": "UpdatedAt"
+                },
+                "user_id": {
+                  "type": "string",
+                  "x-go-name": "UserId"
+                },
+                "volume": {
+                  "type": "number",
+                  "format": "double",
+                  "x-go-name": "Volume"
+                }
               }
             },
             "x-go-name": "Data"

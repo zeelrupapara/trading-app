@@ -94,3 +94,15 @@ func (model *OrderModel) InsertOrder(order Order) (Order, error) {
 	}
 	return order, err
 }
+
+func (model *OrderModel) GetOrders(limit uint, offset uint, userId string) ([]Order, error) {
+	var orders []Order
+	query := model.db.From(OrderTable).Limit(limit).Offset(offset)
+	if userId != "" {
+		query = query.Where(goqu.Ex{"user_id": userId})
+	}
+	if err := query.ScanStructs(&orders); err != nil {
+		return nil, err
+	}
+	return orders, nil
+}

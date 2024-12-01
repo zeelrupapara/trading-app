@@ -3,6 +3,7 @@ package constants
 // variables
 const (
 	CookieUser = "user"
+	OrderPageLimit uint = 10
 )
 
 // fiber contexts

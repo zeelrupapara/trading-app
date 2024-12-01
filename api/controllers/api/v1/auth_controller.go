@@ -44,7 +44,7 @@ func NewAuthController(goqu *goqu.Database, logger *zap.Logger, config config.Ap
 }
 
 // DoAuth authenticate user with email and password
-// swagger:route POST /login Auth RequestAuthnUser
+// swagger:route POST /api/v1/login Auth RequestAuthnUser
 //
 // Authenticate user with email and password.
 //
@@ -99,7 +99,7 @@ func (ctrl *AuthController) Login(c *fiber.Ctx) error {
 }
 
 // Logout clear user cookie
-// swagger:route POST /logout Auth RequestLogout
+// swagger:route POST /api/v1/logout Auth RequestLogout
 //
 // Clear user cookie.
 //

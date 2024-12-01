@@ -4,8 +4,9 @@ import (
 	"database/sql"
 
 	"github.com/doug-martin/goqu/v9"
-	"github.com/rs/xid"
+	"github.com/google/uuid"
 )
+
 const UserTable = "users"
 
 // User model
@@ -66,7 +67,7 @@ func (model *UserModel) GetById(id string) (User, error) {
 
 // InsertUser retrieve user
 func (model *UserModel) InsertUser(user User) (User, error) {
-	user.ID = xid.New().String()
+	user.ID = uuid.New().String()
 
 	_, err := model.db.Insert(UserTable).Rows(
 		goqu.Record{

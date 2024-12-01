@@ -92,6 +92,27 @@ type ResponseMarketData struct {
 	} `json:"body"`
 }
 
+// swagger:parameters RequestPlaceOrder
+type RequestPlaceOrder struct {
+	// in:body
+	// required: true
+	Body struct {
+		structs.ReqPlaceOrder
+	}
+}
+
+// swagger:response ResponsePlaceOrder
+type ResponsePlaceOrder struct {
+	// in:body
+	Body struct {
+		// enum: success
+		Status string `json:"status"`
+		Data   struct {
+			structs.ResPlaceOrder
+		} `json:"data"`
+	} `json:"body"`
+}
+
 ////////////////////
 // --- GENERIC ---//
 ////////////////////

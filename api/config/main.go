@@ -15,6 +15,7 @@ type AppConfig struct {
 	Port          string `envconfig:"APP_PORT"`
 	Secret        string `envconfig:"JWT_SECRET"`
 	DB            DBConfig
+	Binance       BinanceConfig
 }
 
 func GetConfig() AppConfig {

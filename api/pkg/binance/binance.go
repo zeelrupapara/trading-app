@@ -8,9 +8,19 @@ import (
 	binance "github.com/adshao/go-binance/v2"
 )
 
+type BinanceClient struct {
+	Client *binance.Client
+}
+
 type BinanceConnector struct {
 	clients map[string]map[chan []byte]bool 
 	mu      sync.Mutex
+}
+
+func NewBinanceClient(apiKey, secretKey string) *BinanceClient {
+	return &BinanceClient{
+		Client: binance.NewClient(apiKey, secretKey),
+	}
 }
 
 func NewBinanceConnector() *BinanceConnector {

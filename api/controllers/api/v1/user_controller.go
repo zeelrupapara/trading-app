@@ -39,7 +39,7 @@ func NewUserController(goqu *goqu.Database, logger *zap.Logger) (*UserController
 }
 
 // UserGet get the user by id
-// swagger:route GET /users/{userId} Users RequestGetUser
+// swagger:route GET /api/v1/users/{userId} Users RequestGetUser
 //
 // Get a user.
 //
@@ -50,7 +50,7 @@ func NewUserController(goqu *goqu.Database, logger *zap.Logger) (*UserController
 //
 //		Responses:
 //		  200: ResponseGetUser
-//	   400: GenericResFailNotFound
+//	      400: GenericResFailNotFound
 //		  500: GenericResError
 func (ctrl *UserController) GetUser(c *fiber.Ctx) error {
 	userID := c.Params(constants.ParamUid)
@@ -66,7 +66,7 @@ func (ctrl *UserController) GetUser(c *fiber.Ctx) error {
 }
 
 // CreateUser registers a user
-// swagger:route POST /users Users RequestCreateUser
+// swagger:route POST /api/v1/users Users RequestCreateUser
 //
 // Register a user.
 //
@@ -77,7 +77,7 @@ func (ctrl *UserController) GetUser(c *fiber.Ctx) error {
 //
 //		Responses:
 //		  201: ResponseCreateUser
-//	   400: GenericResFailBadRequest
+//	      400: GenericResFailBadRequest
 //		  500: GenericResError
 func (ctrl *UserController) CreateUser(c *fiber.Ctx) error {
 

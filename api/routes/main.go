@@ -31,17 +31,22 @@ func Setup(app *fiber.App, goqu *goqu.Database, logger *zap.Logger, config confi
 		Title:    "Swagger API Docs",
 	}))
 
-	router := app.Group("/api")
-	v1 := router.Group("/v1")
+	// For API group
+	api := app.Group("/api")
+	api_v1 := api.Group("/v1")
+
+	// For WS group
+	ws := app.Group("/ws")
+	ws_v1 := ws.Group("/v1")
 
 	middlewares := middlewares.NewMiddleware(config, logger)
 
-	err := setupAuthController(v1, goqu, logger, config)
+	err := setupAuthController(api_v1, goqu, logger, config)
 	if err != nil {
 		return err
 	}
 
-	err = setupUserController(v1, goqu, logger, middlewares)
+	err = setupUserController(api_v1, goqu, logger, middlewares)
 	if err != nil {
 		return err
 	}
@@ -52,6 +57,11 @@ func Setup(app *fiber.App, goqu *goqu.Database, logger *zap.Logger, config confi
 	}
 
 	err = metricsController(app, goqu, logger, pMetrics)
+	if err != nil {
+		return err
+	}
+
+	err = marketDataController(ws_v1, logger)
 	if err != nil {
 		return err
 	}
@@ -101,5 +111,11 @@ func metricsController(app *fiber.App, db *goqu.Database, logger *zap.Logger, pM
 	}
 
 	app.Get("/metrics", metricsController.Metrics)
+	return nil
+}
+
+func marketDataController(ws fiber.Router, logger *zap.Logger) error {
+	marketDataController := controller.NewMarketDataController(logger)
+	ws.Get("/marketdata", marketDataController.ServeMarketData())
 	return nil
 }

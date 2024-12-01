@@ -65,6 +65,33 @@ type ResponseAuthnUser struct {
 	} `json:"body"`
 }
 
+// swagger:parameters RequestMarketData
+type RequestMarketData struct {
+	// in:parameters
+	// required: true
+	Symbol string `json:"symbol"`
+}
+
+type MarketData struct {
+	Symbol   string `json:"symbol"`
+	BidPrice string `json:"bidPrice"`
+	BidQty   string `json:"bidQty"`
+	AskPrice string `json:"askPrice"`
+	AskQty   string `json:"askQty"`
+}
+
+// swagger:response ResponseMarketData
+type ResponseMarketData struct {
+	// in:body
+	Body struct {
+		// enum: success
+		Status string `json:"status"`
+		Data   struct {
+			MarketData
+		} `json:"data"`
+	} `json:"body"`
+}
+
 ////////////////////
 // --- GENERIC ---//
 ////////////////////

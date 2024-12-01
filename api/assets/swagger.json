@@ -2,6 +2,101 @@
   "swagger": "2.0",
   "info": {},
   "paths": {
+    "/api/v1/users": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Register a user.",
+        "operationId": "RequestCreateUser",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "x-go-name": "Email"
+                },
+                "first_name": {
+                  "type": "string",
+                  "x-go-name": "FirstName"
+                },
+                "last_name": {
+                  "type": "string",
+                  "x-go-name": "LastName"
+                },
+                "password": {
+                  "type": "string",
+                  "x-go-name": "Password"
+                },
+                "roles": {
+                  "type": "string",
+                  "x-go-name": "Roles"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/ResponseCreateUser"
+          },
+          "400": {
+            "$ref": "#/responses/GenericResFailBadRequest"
+          },
+          "500": {
+            "$ref": "#/responses/GenericResError"
+          }
+        }
+      }
+    },
+    "/api/v1/users/{userId}": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get a user.",
+        "operationId": "RequestGetUser",
+        "parameters": [
+          {
+            "type": "string",
+            "x-go-name": "UserId",
+            "name": "userId",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/ResponseGetUser"
+          },
+          "400": {
+            "$ref": "#/responses/GenericResFailNotFound"
+          },
+          "500": {
+            "$ref": "#/responses/GenericResError"
+          }
+        }
+      }
+    },
     "/healthz": {
       "get": {
         "description": "Overall health check",
@@ -137,94 +232,36 @@
         "operationId": "ReqMetrics"
       }
     },
-    "/users": {
-      "post": {
-        "consumes": [
-          "application/json"
-        ],
-        "schemes": [
-          "http",
-          "https"
-        ],
-        "tags": [
-          "Users"
-        ],
-        "summary": "Register a user.",
-        "operationId": "RequestCreateUser",
-        "parameters": [
-          {
-            "name": "Body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string",
-                  "x-go-name": "Email"
-                },
-                "first_name": {
-                  "type": "string",
-                  "x-go-name": "FirstName"
-                },
-                "last_name": {
-                  "type": "string",
-                  "x-go-name": "LastName"
-                },
-                "password": {
-                  "type": "string",
-                  "x-go-name": "Password"
-                },
-                "roles": {
-                  "type": "string",
-                  "x-go-name": "Roles"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "$ref": "#/responses/ResponseCreateUser"
-          },
-          "400": {
-            "$ref": "#/responses/GenericResFailBadRequest"
-          },
-          "500": {
-            "$ref": "#/responses/GenericResError"
-          }
-        }
-      }
-    },
-    "/users/{userId}": {
+    "/ws/v1/marketdata": {
       "get": {
         "consumes": [
           "application/json"
         ],
         "schemes": [
-          "http",
-          "https"
+          "ws",
+          "wss"
         ],
         "tags": [
-          "Users"
+          "MarketData"
         ],
-        "summary": "Get a user.",
-        "operationId": "RequestGetUser",
+        "summary": "Handles the WebSocket connection for market data.",
+        "operationId": "RequestMarketData",
         "parameters": [
           {
             "type": "string",
-            "x-go-name": "UserId",
-            "name": "userId",
-            "in": "path",
+            "x-go-name": "Symbol",
+            "description": "in:parameters",
+            "name": "symbol",
+            "in": "query",
             "required": true
           }
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/ResponseGetUser"
+            "$ref": "#/responses/ResponseMarketData"
           },
           "400": {
-            "$ref": "#/responses/GenericResFailNotFound"
+            "$ref": "#/responses/GenericResFailBadRequest"
           },
           "500": {
             "$ref": "#/responses/GenericResError"
@@ -500,6 +537,47 @@
               "updated_at": {
                 "type": "string",
                 "x-go-name": "UpdatedAt"
+              }
+            },
+            "x-go-name": "Data"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ],
+            "x-go-name": "Status"
+          }
+        }
+      }
+    },
+    "ResponseMarketData": {
+      "description": "",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "askPrice": {
+                "type": "string",
+                "x-go-name": "AskPrice"
+              },
+              "askQty": {
+                "type": "string",
+                "x-go-name": "AskQty"
+              },
+              "bidPrice": {
+                "type": "string",
+                "x-go-name": "BidPrice"
+              },
+              "bidQty": {
+                "type": "string",
+                "x-go-name": "BidQty"
+              },
+              "symbol": {
+                "type": "string",
+                "x-go-name": "Symbol"
               }
             },
             "x-go-name": "Data"

@@ -66,6 +66,11 @@ func Setup(app *fiber.App, goqu *goqu.Database, logger *zap.Logger, config confi
 		return err
 	}
 
+	err = ordersController(api_v1, goqu, logger, config, middlewares)
+	if err != nil {
+		return err
+	}
+
 	mu.Unlock()
 	return nil
 }
@@ -117,5 +122,15 @@ func metricsController(app *fiber.App, db *goqu.Database, logger *zap.Logger, pM
 func marketDataController(ws fiber.Router, logger *zap.Logger) error {
 	marketDataController := controller.NewMarketDataController(logger)
 	ws.Get("/marketdata", marketDataController.ServeMarketData())
+	return nil
+}
+
+func ordersController(v1 fiber.Router, goqu *goqu.Database, logger *zap.Logger, cfg config.AppConfig, middleware middlewares.Middleware) error {
+	orderController, err := controller.NewOrderController(logger, goqu, cfg)
+	if err != nil {
+		return err
+	}
+
+	v1.Post("/orders", middleware.Authenticated, orderController.PlaceOrder)
 	return nil
 }

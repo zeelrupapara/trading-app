@@ -2,6 +2,138 @@
   "swagger": "2.0",
   "info": {},
   "paths": {
+    "/api/v1/login": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Authenticate user with email and password.",
+        "operationId": "RequestAuthnUser",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "x-go-name": "Email"
+                },
+                "password": {
+                  "type": "string",
+                  "x-go-name": "Password"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/ResponseAuthnUser"
+          },
+          "400": {
+            "$ref": "#/responses/GenericResFailBadRequest"
+          },
+          "401": {
+            "$ref": "#/responses/ResForbiddenRequest"
+          },
+          "500": {
+            "$ref": "#/responses/GenericResError"
+          }
+        }
+      }
+    },
+    "/api/v1/logout": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Clear user cookie.",
+        "operationId": "RequestLogout",
+        "responses": {
+          "204": {
+            "$ref": "#/responses/NoContent"
+          },
+          "400": {
+            "$ref": "#/responses/GenericResFailBadRequest"
+          },
+          "401": {
+            "$ref": "#/responses/ResForbiddenRequest"
+          },
+          "500": {
+            "$ref": "#/responses/GenericResError"
+          }
+        }
+      }
+    },
+    "/api/v1/orders": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Place a new order.",
+        "operationId": "RequestPlaceOrder",
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "symbol": {
+                  "type": "string",
+                  "x-go-name": "Symbol"
+                },
+                "type": {
+                  "type": "string",
+                  "x-go-name": "Type"
+                },
+                "volume": {
+                  "type": "number",
+                  "format": "double",
+                  "x-go-name": "Volume"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/ResponsePlaceOrder"
+          },
+          "400": {
+            "$ref": "#/responses/GenericResFailBadRequest"
+          },
+          "500": {
+            "$ref": "#/responses/GenericResError"
+          }
+        }
+      }
+    },
     "/api/v1/users": {
       "post": {
         "consumes": [
@@ -132,86 +264,6 @@
         "responses": {
           "200": {
             "$ref": "#/responses/GenericResOk"
-          },
-          "500": {
-            "$ref": "#/responses/GenericResError"
-          }
-        }
-      }
-    },
-    "/login": {
-      "post": {
-        "consumes": [
-          "application/json"
-        ],
-        "schemes": [
-          "http",
-          "https"
-        ],
-        "tags": [
-          "Auth"
-        ],
-        "summary": "Authenticate user with email and password.",
-        "operationId": "RequestAuthnUser",
-        "parameters": [
-          {
-            "name": "Body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string",
-                  "x-go-name": "Email"
-                },
-                "password": {
-                  "type": "string",
-                  "x-go-name": "Password"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "$ref": "#/responses/ResponseAuthnUser"
-          },
-          "400": {
-            "$ref": "#/responses/GenericResFailBadRequest"
-          },
-          "401": {
-            "$ref": "#/responses/ResForbiddenRequest"
-          },
-          "500": {
-            "$ref": "#/responses/GenericResError"
-          }
-        }
-      }
-    },
-    "/logout": {
-      "post": {
-        "consumes": [
-          "application/json"
-        ],
-        "schemes": [
-          "http",
-          "https"
-        ],
-        "tags": [
-          "Auth"
-        ],
-        "summary": "Clear user cookie.",
-        "operationId": "RequestLogout",
-        "responses": {
-          "204": {
-            "$ref": "#/responses/NoContent"
-          },
-          "400": {
-            "$ref": "#/responses/GenericResFailBadRequest"
-          },
-          "401": {
-            "$ref": "#/responses/ResForbiddenRequest"
           },
           "500": {
             "$ref": "#/responses/GenericResError"
@@ -578,6 +630,60 @@
               "symbol": {
                 "type": "string",
                 "x-go-name": "Symbol"
+              }
+            },
+            "x-go-name": "Data"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ],
+            "x-go-name": "Status"
+          }
+        }
+      }
+    },
+    "ResponsePlaceOrder": {
+      "description": "",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "created_at": {
+                "type": "string",
+                "x-go-name": "CreatedAt"
+              },
+              "id": {
+                "type": "string",
+                "x-go-name": "Id"
+              },
+              "order_type": {
+                "type": "string",
+                "x-go-name": "OrderType"
+              },
+              "price": {
+                "type": "string",
+                "x-go-name": "Price"
+              },
+              "symbol": {
+                "type": "string",
+                "x-go-name": "Symbol"
+              },
+              "updated_at": {
+                "type": "string",
+                "x-go-name": "UpdatedAt"
+              },
+              "user_id": {
+                "type": "string",
+                "x-go-name": "UserId"
+              },
+              "volume": {
+                "type": "number",
+                "format": "double",
+                "x-go-name": "Volume"
               }
             },
             "x-go-name": "Data"

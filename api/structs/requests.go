@@ -15,3 +15,9 @@ type ReqLoginUser struct {
 	Email    string `json:"email" validate:"required"`
 	Password string `json:"password" validate:"required"`
 }
+
+type ReqPlaceOrder struct {
+	Symbol string  `json:"symbol" validate:"required"`
+	Volume float64 `json:"volume" validate:"required"`
+	Type   string  `json:"type" validate:"required"`
+}

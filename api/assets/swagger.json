@@ -134,6 +134,27 @@
         }
       }
     },
+    "/api/v1/position": {
+      "get": {
+        "schemes": [
+          "http",
+          "https"
+        ],
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Retrieve all positions.",
+        "operationId": "nil",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/ResponsePosition"
+          },
+          "500": {
+            "$ref": "#/responses/GenericResError"
+          }
+        }
+      }
+    },
     "/api/v1/trade-history": {
       "get": {
         "schemes": [
@@ -714,6 +735,54 @@
                 "type": "number",
                 "format": "double",
                 "x-go-name": "Volume"
+              }
+            },
+            "x-go-name": "Data"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success"
+            ],
+            "x-go-name": "Status"
+          }
+        }
+      }
+    },
+    "ResponsePosition": {
+      "description": "",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "current_price": {
+                  "type": "number",
+                  "format": "double",
+                  "x-go-name": "CurrentPrice"
+                },
+                "holding_investment": {
+                  "type": "number",
+                  "format": "double",
+                  "x-go-name": "HoldingInvestment"
+                },
+                "holding_volume": {
+                  "type": "number",
+                  "format": "double",
+                  "x-go-name": "HoldingVolume"
+                },
+                "profit_loss": {
+                  "type": "number",
+                  "format": "double",
+                  "x-go-name": "ProfitLoss"
+                },
+                "symbol": {
+                  "type": "string",
+                  "x-go-name": "Symbol"
+                }
               }
             },
             "x-go-name": "Data"

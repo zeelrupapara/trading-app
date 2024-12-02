@@ -94,11 +94,17 @@ func marshalEvent(event *binance.WsDepthEvent) []byte {
 		AskPrice string `json:"askPrice"`
 		AskQty   string `json:"askQty"`
 	}{
-		Symbol:   event.Symbol,
-		BidPrice: event.Bids[0].Price,
-		BidQty:   event.Bids[0].Quantity,
-		AskPrice: event.Asks[0].Price,
-		AskQty:   event.Asks[0].Quantity,
+		Symbol: event.Symbol,
+	}
+
+	if len(event.Bids) > 0 {
+		depthData.BidPrice = event.Bids[0].Price
+		depthData.BidQty = event.Bids[0].Quantity
+	}
+
+	if len(event.Asks) > 0 {
+		depthData.AskPrice = event.Asks[0].Price
+		depthData.AskQty = event.Asks[0].Quantity
 	}
 
 	// Marshal struct to JSON

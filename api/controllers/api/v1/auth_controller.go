@@ -63,18 +63,21 @@ func (ctrl *AuthController) Login(c *fiber.Ctx) error {
 
 	err := json.Unmarshal(c.Body(), &reqLoginUser)
 	if err != nil {
+		ctrl.logger.Error("error while unmarshal", zap.Error(err))
 		return utils.JSONError(c, http.StatusBadRequest, err.Error())
 	}
 
 	validate := validator.New()
 	err = validate.Struct(reqLoginUser)
 	if err != nil {
+		ctrl.logger.Error("error while validate", zap.Error(err))
 		return utils.JSONFail(c, http.StatusBadRequest, utils.ValidatorErrorString(err))
 	}
 
 	user, err := ctrl.userService.Authenticate(reqLoginUser.Email, reqLoginUser.Password)
 	if err != nil {
 		if err == sql.ErrNoRows {
+			ctrl.logger.Error("error while get user by email and password", zap.Error(err), zap.Any("email", reqLoginUser.Email))
 			return utils.JSONFail(c, http.StatusUnauthorized, constants.InvalidCredentials)
 		}
 		ctrl.logger.Error("error while get user by email and password", zap.Error(err), zap.Any("email", reqLoginUser.Email))
@@ -95,6 +98,7 @@ func (ctrl *AuthController) Login(c *fiber.Ctx) error {
 	}
 	c.Cookie(userCookie)
 
+	ctrl.logger.Debug("login user", zap.Any("user", user))
 	return utils.JSONSuccess(c, http.StatusOK, user)
 }
 
@@ -121,5 +125,6 @@ func (ctrl *AuthController) Logout(c *fiber.Ctx) error {
 	}
 	c.Cookie(userCookie)
 
+	ctrl.logger.Debug("logout user")
 	return utils.JSONSuccess(c, http.StatusNoContent, nil)
 }

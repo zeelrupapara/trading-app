@@ -27,6 +27,7 @@ type UserController struct {
 func NewUserController(goqu *goqu.Database, logger *zap.Logger) (*UserController, error) {
 	userModel, err := models.InitUserModel(goqu)
 	if err != nil {
+		logger.Error("error while initializing user model", zap.Error(err))
 		return nil, err
 	}
 
@@ -57,6 +58,7 @@ func (ctrl *UserController) GetUser(c *fiber.Ctx) error {
 	user, err := ctrl.userService.GetUser(userID)
 	if err != nil {
 		if err == sql.ErrNoRows {
+			ctrl.logger.Error("user not found", zap.Any("id", userID))
 			return utils.JSONFail(c, http.StatusNotFound, constants.UserNotExist)
 		}
 		ctrl.logger.Error("error while get user by id", zap.Any("id", userID), zap.Error(err))
@@ -85,12 +87,14 @@ func (ctrl *UserController) CreateUser(c *fiber.Ctx) error {
 
 	err := json.Unmarshal(c.Body(), &userReq)
 	if err != nil {
+		ctrl.logger.Error("error while unmarshal", zap.Error(err))
 		return utils.JSONFail(c, http.StatusBadRequest, err.Error())
 	}
 
 	validate := validator.New()
 	err = validate.Struct(userReq)
 	if err != nil {
+		ctrl.logger.Error("error while validate", zap.Error(err))
 		return utils.JSONFail(c, http.StatusBadRequest, utils.ValidatorErrorString(err))
 	}
 
@@ -100,5 +104,6 @@ func (ctrl *UserController) CreateUser(c *fiber.Ctx) error {
 		return utils.JSONError(c, http.StatusInternalServerError, constants.ErrInsertUser)
 	}
 
+	ctrl.logger.Debug("user created", zap.Any("user", user))
 	return utils.JSONSuccess(c, http.StatusCreated, user)
 }

@@ -32,9 +32,7 @@ func NewMarketDataController(logger *zap.Logger) *MarketDataController {
 //	  500: GenericResError
 
 func (ctrl *MarketDataController) ServeMarketData() fiber.Handler {
-	ctrl.logger.Info("Starting market data controller")
 	return websocket.New(func(conn *websocket.Conn) {
-		// Getting the symbol from the query
 		symbol := conn.Query("symbol")
 		if symbol == "" {
 			ctrl.logger.Error("Symbol query parameter is required.")
@@ -43,7 +41,6 @@ func (ctrl *MarketDataController) ServeMarketData() fiber.Handler {
 			return
 		}
 
-		// Create a channel for messages to be sent to the client
 		clientChannel := make(chan []byte)
 		ctrl.service.RegisterClient(symbol, clientChannel)
 		ctrl.logger.Info("Connected to market data", zap.String("symbol", symbol))
@@ -54,7 +51,6 @@ func (ctrl *MarketDataController) ServeMarketData() fiber.Handler {
 			conn.Close()
 		}()
 
-		// Goroutine to handle incoming messages from the service
 		go func() {
 			for message := range clientChannel {
 				if err := conn.WriteMessage(websocket.TextMessage, message); err != nil {
@@ -64,7 +60,6 @@ func (ctrl *MarketDataController) ServeMarketData() fiber.Handler {
 			}
 		}()
 
-		// Keep the connection open by reading incoming messages
 		for {
 			if _, _, err := conn.ReadMessage(); err != nil {
 				ctrl.logger.Error("Error reading message:", zap.Error(err))

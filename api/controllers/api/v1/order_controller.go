@@ -32,6 +32,7 @@ func NewOrderController(logger *zap.Logger, db *goqu.Database, cfg config.AppCon
 	// Initialize the models
 	orderModel, err := models.InitOrderModel(db)
 	if err != nil {
+		logger.Error("error while initializing order model", zap.Error(err))
 		return nil, err
 	}
 
@@ -61,10 +62,12 @@ func (ctrl *OrderController) PlaceOrder(c *fiber.Ctx) error {
 
 	err := json.Unmarshal(c.Body(), &orderReq)
 	if err != nil {
+		ctrl.logger.Error("error while unmarshal", zap.Error(err))
 		return utils.JSONFail(c, http.StatusBadRequest, err.Error())
 	}
 
 	if orderReq.Type != "buy" && orderReq.Type != "sell" {
+		ctrl.logger.Error("Order type must be 'buy' or 'sell'")
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Order type must be 'buy' or 'sell'"})
 	}
 
@@ -74,6 +77,7 @@ func (ctrl *OrderController) PlaceOrder(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to place order"})
 	}
 
+	ctrl.logger.Debug("Order placed", zap.Any("order", order))
 	return c.JSON(order)
 }
 
@@ -103,6 +107,8 @@ func (ctrl *OrderController) GetOrders(c *fiber.Ctx) error {
 	if err != nil {
 		return utils.JSONError(c, http.StatusInternalServerError, err.Error())
 	}
+
+	ctrl.logger.Debug("Orders retrieved", zap.Any("orders", orders))
 	return utils.JSONSuccess(c, http.StatusOK, orders)
 }
 

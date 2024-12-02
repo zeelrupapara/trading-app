@@ -14,6 +14,7 @@ type AppConfig struct {
 	Debug         bool   `envconfig:"DEBUG"`
 	Port          string `envconfig:"APP_PORT"`
 	Secret        string `envconfig:"JWT_SECRET"`
+	WebUrl        string `envconfig:"WEB_URL"`
 	DB            DBConfig
 	Binance       BinanceConfig
 }

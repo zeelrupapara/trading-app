@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/zeelrupapara/trading-api/config"
 	"github.com/zeelrupapara/trading-api/constants"
 	"github.com/zeelrupapara/trading-api/middlewares"
@@ -23,6 +24,11 @@ func Setup(app *fiber.App, goqu *goqu.Database, logger *zap.Logger, config confi
 	mu.Lock()
 
 	app.Use(middlewares.LogHandler(logger, pMetrics))
+
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: config.WebUrl,
+		AllowCredentials: true,           
+	}))
 
 	app.Use(swagger.New(swagger.Config{
 		BasePath: "/api/v1/",

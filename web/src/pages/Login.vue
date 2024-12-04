@@ -25,6 +25,6 @@ const authStore = useAuthStore();
 
 const handleLogin = async () => {
   const response = await authStore.login(email.value, password.value);
-  router.push('/home');
+  window.location.href = '/';
 };
 </script>

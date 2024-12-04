@@ -34,6 +34,7 @@
   const authStore = useAuthStore();
   
   const handleRegister = async () => {
-    await authStore.register({ email: email.value, password: password.value, firstName: firstName.value, lastName: lastName.value });
+    await authStore.register({ email: email.value, password: password.value, first_name: firstName.value, last_name: lastName.value, roles: "user" });
+    window.location.href = '/';
   };
   </script>
